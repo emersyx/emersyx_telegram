@@ -341,3 +341,17 @@ type CallbackGame struct {
     MessageID                     int64               `json:"message_id"`
     InlineMessageID               string              `json:"inline_message_id"`
 }
+
+// https://core.telegram.org/bots/api#Update
+type Update struct {
+    UpdateID                      int64               `json:"update_id"`
+    Message                       *Message            `json:"message"`
+    EditedMessage                 *Message            `json:"edited_message"`
+    ChannelPost                   *Message            `json:"channel_post"`
+    EditedChannelPost             *Message            `json:"edited_channel_post"`
+    InlineQuery                   *InlineQuery        `json:"inline_query"`
+    ChosenInlineResult            *ChosenInlineResult `json:"chosen_inline_result"`
+    CallbackQuery                 *CallbackQuery      `json:"callback_query"`
+    ShippingQuery                 *ShippingQuery      `json:"shipping_query"`
+    PreCheckoutQuery              *PreCheckoutQuery   `json:"pre_checkout_query"`
+}
