@@ -32,7 +32,10 @@ func NewTelegramBot(apiToken string) (emtg.TelegramBot, error) {
         var up tgbotapi.Update
         for true {
             up = <- uch
-            bot.Updates <- up
+            cup, err := convertUpdate(up)
+            if err == nil {
+                bot.Updates <- &cup
+            }
         }
     }()
 
