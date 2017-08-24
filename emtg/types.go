@@ -355,3 +355,40 @@ type Update struct {
     ShippingQuery                 *ShippingQuery      `json:"shipping_query"`
     PreCheckoutQuery              *PreCheckoutQuery   `json:"pre_checkout_query"`
 }
+
+// https://core.telegram.org/bots/api#InlineQuery
+type InlineQuery struct {
+    ID                            string              `json:"id"`
+    From                          *User               `json:"from"`
+    Location                      *Location           `json:"location"`
+    Query                         string              `json:"query"`
+    Offset                        string              `json:"offset"`
+}
+
+// https://core.telegram.org/bots/api#ChosenInlineResult
+type ChosenInlineResult struct {
+    ResultID                      string              `json:"result_id"`
+    From                          *User               `json:"from"`
+    Location                      *Location           `json:"location"`
+    InlineMessageID               string              `json:"inline_message_id"`
+    Query                         string              `json:"query"`
+}
+
+// https://core.telegram.org/bots/api#ShippingQuery
+type ShippingQuery struct {
+    ID                            string              `json:"id"`
+    From                          *User               `json:"from"`
+    InvoicePayload                string              `json:"invoice_payload"`
+    ShippingAddress               *ShippingAddress    `json:"shipping_address"`
+}
+
+// https://core.telegram.org/bots/api#PreCheckoutQuery
+type PreCheckoutQuery struct {
+    ID                            string              `json:"id"`
+    From                          *User               `json:"from"`
+    Currency                      string              `json:"currency"`
+    TotalAmount                   int64               `json:"total_amount"`
+    InvoicePayload                string              `json:"invoice_payload"`
+    ShippingOptionID              string              `json:"shipping_option_id"`
+    OrderInfo                     *OrderInfo          `json:"order_info"`
+}
