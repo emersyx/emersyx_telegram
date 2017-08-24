@@ -20,3 +20,18 @@ func convertMessage(am tgbotapi.Message) (emtg.Message, error) {
 
     return rm, nil
 }
+
+func convertUpdate(au tgbotapi.Update) (emtg.Update, error) {
+    bytes, err := json.Marshal(au)
+    if err != nil {
+        return emtg.Update{}, err
+    }
+
+    ru := emtg.Update{}
+    err = json.Unmarshal(bytes, &ru)
+    if err != nil {
+        return emtg.Update{}, err
+    }
+
+    return ru, nil
+}
