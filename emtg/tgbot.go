@@ -1,78 +1,41 @@
 package main
 
 import(
-    "emersyx.net/emersyx_telegram/emtg"
-    "errors"
-    "github.com/go-telegram-bot-api/telegram-bot-api"
+    "emersyx.net/emersyx_apis/emcomapi"
+    "emersyx.net/emersyx_apis/emtgapi"
 )
 
 type TelegramBot struct {
-    api *tgbotapi.BotAPI
-    Updates chan interface{}
+    identifier string
+    updatesLimit uint
+    updatesTimeout uint
+    updatesAllowed []string
+    updates chan emcomapi.Event
 }
 
-func NewTelegramBot(apiToken string) (emtg.TelegramBot, error) {
-    var err error
+func (bot TelegramBot) startPolling() {
+}
 
+func NewTelegramBot(options ...func(emtgapi.TelegramBot) error) (emtgapi.TelegramBot, error) {
     bot := new(TelegramBot)
-    bot.Updates = make(chan interface{})
-    bot.api, err = tgbotapi.NewBotAPI(apiToken)
-    if err != nil {
-        return nil, err
-    }
 
-    ucfg := tgbotapi.NewUpdate(0)
-    ucfg.Timeout = 60
-    uch, err := bot.api.GetUpdatesChan(ucfg)
-    if err != nil {
-        return nil, err
-    }
+    // create the Updates channel
+    bot.updates = make(chan emcomapi.Event)
 
-    go func() {
-        var up tgbotapi.Update
-        for true {
-            up = <- uch
-            cup, err := convertUpdate(up)
-            if err == nil {
-                bot.Updates <- &cup
-            }
+    // initialize default values for options
+    bot.updatesLimit = 100
+    bot.updatesTimeout = 60
+
+    // apply the options received as argument
+    for _, option := range options {
+        err := option(bot)
+        if err != nil {
+            return nil, err
         }
-    }()
+    }
+
+    // start polling the Telegram servers for updates
+    bot.startPolling()
 
     return bot, nil
 }
-
-func (bot *TelegramBot) GetEventsChannel() chan interface{} {
-    return bot.Updates
-}
-
-func (bot *TelegramBot) SendMessage(chatID interface{}, text string) (emtg.Message, error) {
-    var smsg tgbotapi.MessageConfig
-
-    switch v := chatID.(type) {
-    case int64:
-        smsg = tgbotapi.NewMessage(v, text)
-    case string:
-        smsg = tgbotapi.NewMessageToChannel(v, text)
-    default:
-        return emtg.Message{}, errors.New("invalid type for chatID argument")
-    }
-
-    rmsg, rerr := bot.api.Send(smsg)
-    cmsg, cerr := convertMessage(rmsg)
-
-    if rerr != nil {
-        if cerr != nil {
-            return emtg.Message{}, cerr
-        } else {
-            return cmsg, rerr
-        }
-    } else {
-        if cerr != nil {
-            return emtg.Message{}, cerr
-        } else {
-            return cmsg, nil
-        }
-    }
-}
-
