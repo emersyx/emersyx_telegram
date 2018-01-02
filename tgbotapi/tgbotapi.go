@@ -68,6 +68,11 @@ func SendMessage(params url.Values) (string, error) {
         return "", errors.New("Mandatory parameters have not been set.")
     }
 
+    pm := params.Get("parse_mode")
+    if pm != "" && pm != "Markdown" && pm != "HTML" {
+        return "", errors.New("The parse_mode value can only be set to Markdown or HTML.")
+    }
+
     resp, err := http.PostForm(tgurl("sendMessage"), params)
     if err != nil {
         return "", err
