@@ -9,6 +9,20 @@ import(
 type TelegramOptions struct {
 }
 
+func (o TelegramOptions) Identifier(id string) func(emtgapi.TelegramBot) error {
+    return func(bot emtgapi.TelegramBot) error {
+        if len(id) == 0 {
+            return errors.New("Identifier value cannot have zero length.")
+        }
+        cbot, ok := bot.(*TelegramBot)
+        if ok == false {
+            return errors.New("Unsupported TelegramBot implementation.")
+        }
+        cbot.identifier = id
+        return nil
+    }
+}
+
 func (o TelegramOptions) APIToken(token string) func(emtgapi.TelegramBot) error {
     return func(bot emtgapi.TelegramBot) error {
         if len(token) == 0 {
@@ -58,4 +72,8 @@ func (o TelegramOptions) UpdatesAllowed(types ...string) func(emtgapi.TelegramBo
         }
         return nil
     }
+}
+
+func NewTelegramOptions() emtgapi.TelegramOptions {
+    return TelegramOptions{}
 }
