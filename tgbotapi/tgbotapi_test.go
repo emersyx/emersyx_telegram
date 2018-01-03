@@ -4,11 +4,13 @@ import(
     "flag"
     "net/url"
     "os"
+    "strconv"
     "testing"
 )
 
 var token *string = flag.String("apitoken", "", "Telegram BOT API token")
 var recvID *string = flag.String("recvid", "", "Receiver of test messages")
+var updateOffset *int64 = flag.Int64("updoffset", 0, "Value for the offset parameter when calling the getUpdates method.")
 
 func TestMain(m *testing.M) {
     // get the command line flags
@@ -23,7 +25,7 @@ func TestMain(m *testing.M) {
 
 func TestGetUpdates(t *testing.T) {
     params := url.Values{}
-    //params.Add("offset", "80854227")
+    params.Add("offset", strconv.FormatInt(*updateOffset, 10))
     resp, err := GetUpdates(params)
     if err != nil {
         t.Fatal(err.Error())
