@@ -17,38 +17,58 @@ func (bot *TelegramBot) GetEventsChannel() chan emcomapi.Event {
 }
 
 func (bot *TelegramBot) GetMe() (emtgapi.User, error) {
-    u := emtgapi.User{}
+    apiresp := apiResponse{}
+    user := emtgapi.User{}
 
     resp, err := tgbotapi.GetMe()
     if err != nil {
-        return u, err
+        return user, err
     }
 
-    err = json.Unmarshal( []byte(resp), &u )
+    err = json.Unmarshal( []byte(resp), &apiresp )
     if err != nil {
-        return u, err
+        return user, err
     }
 
-    return u, nil
+    if apiresp.OK == false {
+        return user, errors.New("The ok field in the Bot API response is false.")
+    }
+
+    err = json.Unmarshal(apiresp.Result, &user)
+    if err != nil {
+        return user, err
+    }
+
+    return user, nil
 }
 
 func (bot *TelegramBot) SendMessage(params emtgapi.TelegramParameters) (emtgapi.Message, error) {
-    m := emtgapi.Message{}
+    apiresp := apiResponse{}
+    msg := emtgapi.Message{}
 
     cparams, ok := params.(*TelegramParameters)
     if ok == false {
-        return m, errors.New("Unsuppored TelegramParameters implementation.")
+        return msg, errors.New("Unsuppored TelegramParameters implementation.")
     }
 
     resp, err := tgbotapi.SendMessage(cparams.values)
     if err != nil {
-        return m, err
+        return msg, err
     }
 
-    err = json.Unmarshal( []byte(resp), &m )
+    err = json.Unmarshal( []byte(resp), &apiresp )
     if err != nil {
-        return m, err
+        return msg, err
     }
 
-    return m, nil
+    if apiresp.OK == false {
+        return msg, errors.New("The ok field in the Bot API response is false.")
+    }
+
+    err = json.Unmarshal(apiresp.Result, &msg)
+    if err != nil {
+        return msg, err
+    }
+
+    return msg, nil
 }
