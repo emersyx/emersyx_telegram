@@ -2,28 +2,31 @@
 
 Telegram receptor and resource for emersyx.
 
-## Usage
-
-### Plugin implementation
+## Build
 
 Source files in `emtg_impl` provide the implementation of the go plugin. They have to be built using the command:
 
 ```
-go build -buildmode=plugin -o emersyx_telegram.so emtg_impl/*
+go build -buildmode=plugin -o emtg.so emtg/*
 ```
 
-### Plugin interface
+The resulting `emtg.so` file can then be used by emersyx core.
 
-Source files in `emtg` provide the interface to go plugin. This package has to be imported into projects which use the
-plugin. The function which must be used to create new `TelegramBot` instances (which implement the `emtg.TelegramBot`
-interface) is:
+## Notes
 
-```
-func NewTelegramBot(apiToken string) (emtg.TelegramBot, error)
-```
+The `TelegramBot` struct follows the APIs defined in the [emersyx_apis][1] repository, specifically those from the
+[emtgapi][2] folder.
 
-## Credits
+The `NewTelegramBot` function must be used to create new `TelegramBot` instances. An example of how to use this function
+can be found in the `emtg/tgbot_test.go` file.
 
-The underlying implementation is provided by [go-telegram-bot-api/telegram-bot-api][1].
+## tgbotapi
 
-[1]: https://github.com/go-telegram-bot-api/telegram-bot-api
+The core functionality for interacting with the Telegram Bot back-end is provided by the `tgbotapi` package. This
+package provides low level access to the back-end using only functionality from the standard go library. This package is
+not directly used by emersyx and in theory can be re-used in other projects.
+
+For example usage of the `tgbotapi` package, check the `tgbotapi/tgbotapi_test.go` file.
+
+[1]: https://github.com/emersyx/emersyx_apis
+[2]: https://github.com/emersyx/emersyx_apis/tree/master/emtgapi

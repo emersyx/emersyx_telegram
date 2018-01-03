@@ -9,9 +9,9 @@ This package does not make use of any non-standard third party libraries. It rel
 library.
 
 The package consists of the following files:
-* tgbotapi.go - contains the implementation of the [Bot API methods][2]
-* tgbotapi_test.go - contains tests which connect to the Telegram back-end, make requests and print the result
-* util.go - any general purpose utility code
+* `tgbotapi.go` - contains the implementation of the [Bot API methods][2]
+* `tgbotapi_test.go` - contains tests which connect to the Telegram back-end, make requests and print the result
+* `util.go` - any general purpose utility code
 
 The functions do not format the responses into go types, but instead return raw strings. The strings are meant to be
 further processed at upper layers.
