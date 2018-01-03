@@ -5,6 +5,7 @@ import(
     "fmt"
     "net/http"
     "net/url"
+    "strconv"
 )
 
 const(
@@ -39,6 +40,28 @@ func Initialize(token string) error {
 
 // Use this method to receive incoming updates using long polling. An Array of Update objects is returned.
 func GetUpdates(params url.Values) (string, error) {
+    limit := params.Get("limit")
+    if limit != "" {
+        ilimit, err := strconv.ParseInt(limit, 10, 64)
+        if err != nil {
+            return "", err
+        }
+        if ilimit < 1 || ilimit > 100 {
+            return "", errors.New("The value for the limit parameter must be between 1 and 100.")
+        }
+    }
+
+    timeout := params.Get("timeout")
+    if limit != "" {
+        itimeout, err := strconv.ParseInt(timeout, 10, 64)
+        if err != nil {
+            return "", err
+        }
+        if itimeout < 0 {
+            return "", errors.New("The value for the timeout parameter must not be negative.")
+        }
+    }
+
     resp, err := http.PostForm(tgurl("getUpdates"), params)
     if err != nil {
         return "", err
