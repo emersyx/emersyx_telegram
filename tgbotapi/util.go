@@ -9,7 +9,7 @@ import(
 // This function builds the URL for the Telegram Bot API for the API token used in the Initialize function and the
 // specified method.
 func tgurl(apiMethod string) string {
-    return API_URL + "bot" + apiToken + "/" + apiMethod
+    return "https://api.telegram.org/bot" + apiToken + "/" + apiMethod
 }
 
 // This function takes an *http.Response argument and returns the body of the response as a string.
