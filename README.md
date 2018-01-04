@@ -1,4 +1,4 @@
-# emersyx_telegram [![Build Status](https://travis-ci.org/emersyx/emersyx_telegram.svg?branch=master)](https://travis-ci.org/emersyx/emersyx_telegram)
+# emersyx_telegram [![Build Status][build-img]][build-url] [![Go Report Card][gorep-img]][gorep-url]
 
 Telegram receptor and resource for emersyx.
 
@@ -28,5 +28,9 @@ not directly used by emersyx and in theory can be re-used in other projects.
 
 For example usage of the `tgbotapi` package, check the `tgbotapi/tgbotapi_test.go` file.
 
+[build-img]: https://travis-ci.org/emersyx/emersyx_telegram.svg?branch=master
+[build-url]: https://travis-ci.org/emersyx/emersyx_telegram
+[gorep-img]: https://goreportcard.com/badge/github.com/emersyx/emersyx_telegram
+[gorep-url]: https://goreportcard.com/report/github.com/emersyx/emersyx_telegram
 [1]: https://github.com/emersyx/emersyx_apis
 [2]: https://github.com/emersyx/emersyx_apis/tree/master/emtgapi
