@@ -1,4 +1,4 @@
-# emersyx_telegram
+# emersyx_telegram [![Build Status](https://travis-ci.org/emersyx/emersyx_telegram.svg?branch=master)](https://travis-ci.org/emersyx/emersyx_telegram)
 
 Telegram receptor and resource for emersyx.
 
