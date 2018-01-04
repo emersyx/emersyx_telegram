@@ -8,9 +8,9 @@ import(
     "emersyx.net/emersyx_apis/emtgapi"
 )
 
-var token *string = flag.String("apitoken", "", "Telegram BOT API token")
-var recvID *string = flag.String("recvid", "", "Receiver of test messages")
-var updateOffset *int64 = flag.Int64("updoffset", 0, "Value for the offset parameter when calling the getUpdates method.")
+var token = flag.String("apitoken", "", "Telegram BOT API token")
+var recvID = flag.String("recvid", "", "Receiver of test messages")
+var updateOffset = flag.Int64("updoffset", 0, "Value for the offset parameter when calling the getUpdates method.")
 var bot emtgapi.TelegramBot
 
 func TestMain(m *testing.M) {

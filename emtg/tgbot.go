@@ -14,6 +14,8 @@ type apiResponse struct {
     Result  json.RawMessage `json:"result"`
 }
 
+// TelegramBot is the type which defines a emtgapi.TelegramBot implementation, namely a Telegram resource and receptor
+// for the emersyx platform.
 type TelegramBot struct {
     identifier string
     updatesLimit uint
@@ -22,6 +24,8 @@ type TelegramBot struct {
     updates chan emcomapi.Event
 }
 
+// startPollingUpdates start the process of calling the getUpdates method from the Telegram Bot API, converting the data
+// to emtgapi.EUpdate objects and pushing them through the events channel of the TelegramBot instance.
 func (bot TelegramBot) startPollingUpdates() {
     go func() {
         var offset int64
@@ -45,6 +49,8 @@ func (bot TelegramBot) startPollingUpdates() {
     }()
 }
 
+// getUpdates performs calls to the getUpdates method of the Telegram Bot API and converts the data into emtgapi.Update
+// instances.
 func (bot TelegramBot) getUpdates(offset int64) ([]emtgapi.Update, error) {
     var apiresp apiResponse
     var updates []emtgapi.Update
@@ -65,7 +71,7 @@ func (bot TelegramBot) getUpdates(offset int64) ([]emtgapi.Update, error) {
     }
 
     if apiresp.OK == false {
-        return updates, errors.New("The ok field in the Bot API response is false.")
+        return updates, errors.New("the ok field in the Bot API response is false")
     }
 
     err = json.Unmarshal(apiresp.Result, &updates)
@@ -76,6 +82,7 @@ func (bot TelegramBot) getUpdates(offset int64) ([]emtgapi.Update, error) {
     return updates, nil
 }
 
+// NewTelegramBot creates new TelegramBot instances based on the options given as argument.
 func NewTelegramBot(options ...func(emtgapi.TelegramBot) error) (emtgapi.TelegramBot, error) {
     bot := new(TelegramBot)
 
