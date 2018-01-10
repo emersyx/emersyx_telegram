@@ -1,10 +1,10 @@
 # emersyx_telegram [![Build Status][build-img]][build-url] [![Go Report Card][gorep-img]][gorep-url]
 
-Telegram receptor and resource for emersyx.
+Telegram bot (i.e. receptor plus resource) for emersyx.
 
 ## Build
 
-Source files in `emtg_impl` provide the implementation of the go plugin. They have to be built using the command:
+Source files in `emtg` provide the implementation of the go plugin. They have to be built using the command:
 
 ```
 go build -buildmode=plugin -o emtg.so emtg/*
