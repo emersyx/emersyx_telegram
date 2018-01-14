@@ -1,6 +1,10 @@
-.PHONY: emtg test
+.PHONY: emtg-dep emtg-goget test
 
-emtg:
+emtg-dep:
+	dep ensure
+	go build -buildmode=plugin -o emtg.so emtg/*
+
+emtg-goget:
 	go get -t -buildmode=plugin ./emtg
 
 test:
