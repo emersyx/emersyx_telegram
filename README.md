@@ -4,9 +4,11 @@ Telegram bot (i.e. receptor plus resource) for emersyx.
 
 ## Build
 
-Source files in `emtg` provide the implementation of the go plugin. They have to be built using the command:
+source files in `emtg` provide the implementation of the go plugin. the easiest way to get all dependencies is by using
+the [dep][3] tool. The commands to build the plugin are:
 
 ```
+dep ensure
 go build -buildmode=plugin -o emtg.so emtg/*
 ```
 
@@ -34,3 +36,4 @@ For example usage of the `tgbotapi` package, check the `tgbotapi/tgbotapi_test.g
 [gorep-url]: https://goreportcard.com/report/github.com/emersyx/emersyx_telegram
 [1]: https://github.com/emersyx/emersyx_apis
 [2]: https://github.com/emersyx/emersyx_apis/tree/master/emtgapi
+[3]: https://github.com/golang/dep
