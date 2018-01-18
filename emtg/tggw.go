@@ -14,9 +14,9 @@ type apiResponse struct {
 	Result json.RawMessage `json:"result"`
 }
 
-// TelegramBot is the type which defines a emtgapi.TelegramBot implementation, namely a Telegram resource and receptor
-// for the emersyx platform.
-type TelegramBot struct {
+// TelegramGateway is the type which defines a emtgapi.TelegramGateway implementation, namely a Telegram resource and
+// receptor for the emersyx platform.
+type TelegramGateway struct {
 	identifier     string
 	updatesLimit   uint
 	updatesTimeout uint
@@ -25,12 +25,12 @@ type TelegramBot struct {
 }
 
 // startPollingUpdates start the process of calling the getUpdates method from the Telegram Bot API, converting the data
-// to emtgapi.EUpdate objects and pushing them through the events channel of the TelegramBot instance.
-func (bot TelegramBot) startPollingUpdates() {
+// to emtgapi.EUpdate objects and pushing them through the events channel of the TelegramGateway instance.
+func (gw TelegramGateway) startPollingUpdates() {
 	go func() {
 		var offset int64
 		for {
-			updates, err := bot.getUpdates(offset)
+			updates, err := gw.getUpdates(offset)
 			if err != nil {
 				// if an error occurs, wait for 5 seconds
 				time.Sleep(5)
@@ -39,9 +39,9 @@ func (bot TelegramBot) startPollingUpdates() {
 			for _, update := range updates {
 				eupdate := emtgapi.EUpdate{
 					Update: update,
-					Source: bot.identifier,
+					Source: gw.identifier,
 				}
-				bot.updates <- eupdate
+				gw.updates <- eupdate
 			}
 			// the next offset value is the highest current value plus 1
 			offset = updates[len(updates)-1].UpdateID + 1
@@ -51,14 +51,14 @@ func (bot TelegramBot) startPollingUpdates() {
 
 // getUpdates performs calls to the getUpdates method of the Telegram Bot API and converts the data into emtgapi.Update
 // instances.
-func (bot TelegramBot) getUpdates(offset int64) ([]emtgapi.Update, error) {
+func (gw TelegramGateway) getUpdates(offset int64) ([]emtgapi.Update, error) {
 	var apiresp apiResponse
 	var updates []emtgapi.Update
 
 	params := (NewTelegramParameters()).(*TelegramParameters)
 	params.Offset(offset)
-	params.Limit(bot.updatesLimit)
-	params.Timeout(bot.updatesTimeout)
+	params.Limit(gw.updatesLimit)
+	params.Timeout(gw.updatesTimeout)
 
 	resp, err := tgbotapi.GetUpdates(params.values)
 	if err != nil {
@@ -82,27 +82,27 @@ func (bot TelegramBot) getUpdates(offset int64) ([]emtgapi.Update, error) {
 	return updates, nil
 }
 
-// NewTelegramBot creates new TelegramBot instances based on the options given as argument.
-func NewTelegramBot(options ...func(emtgapi.TelegramBot) error) (emtgapi.TelegramBot, error) {
-	bot := new(TelegramBot)
+// NewTelegramGateway creates new TelegramGateway instances based on the options given as argument.
+func NewTelegramGateway(options ...func(emtgapi.TelegramGateway) error) (emtgapi.TelegramGateway, error) {
+	gw := new(TelegramGateway)
 
 	// create the Updates channel
-	bot.updates = make(chan emcomapi.Event)
+	gw.updates = make(chan emcomapi.Event)
 
 	// initialize default values for options
-	bot.updatesLimit = 100
-	bot.updatesTimeout = 60
+	gw.updatesLimit = 100
+	gw.updatesTimeout = 60
 
 	// apply the options received as argument
 	for _, option := range options {
-		err := option(bot)
+		err := option(gw)
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	// start polling the Telegram servers for updates
-	bot.startPollingUpdates()
+	gw.startPollingUpdates()
 
-	return bot, nil
+	return gw, nil
 }

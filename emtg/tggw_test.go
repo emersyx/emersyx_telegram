@@ -11,7 +11,7 @@ import (
 var token = flag.String("apitoken", "", "Telegram BOT API token")
 var recvID = flag.String("recvid", "", "Receiver of test messages")
 var updateOffset = flag.Int64("updoffset", 0, "Value for the offset parameter when calling the getUpdates method.")
-var bot emtgapi.TelegramBot
+var gw emtgapi.TelegramGateway
 
 func TestMain(m *testing.M) {
 	var err error
@@ -19,14 +19,14 @@ func TestMain(m *testing.M) {
 	// get the command line flags
 	flag.Parse()
 
-	// generate a TelegramOptions object and set the options for the TelegramBot
+	// generate a TelegramOptions object and set the options for the TelegramGateway
 	opt := NewTelegramOptions()
 
 	// create the telegram bot
-	// in this implementation, the NewTelegramBot function also makes a call to getMe
-	bot, err = NewTelegramBot(
+	// in this implementation, the NewTelegramGateway function also makes a call to getMe
+	gw, err = NewTelegramGateway(
 		opt.APIToken(*token),
-		opt.Identifier("emersyx-tgbot-test"),
+		opt.Identifier("emersyx-tggw-test"),
 	)
 
 	if err != nil {
@@ -38,7 +38,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestGetMe(t *testing.T) {
-	u, err := bot.GetMe()
+	u, err := gw.GetMe()
 	if err != nil {
 		t.Log(err.Error())
 		t.Fail()
@@ -60,7 +60,7 @@ func TestSendMessage(t *testing.T) {
 	params.ChatID(*recvID)
 	params.Text("hello world! hello from *emersyx*!")
 	params.ParseMode("Markdown")
-	m, err := bot.SendMessage(params)
+	m, err := gw.SendMessage(params)
 	if err != nil {
 		t.Log(err.Error())
 		t.Fail()
@@ -76,10 +76,10 @@ func TestSendMessage(t *testing.T) {
 }
 
 func TestGetUpdates(t *testing.T) {
-	eventsChannel := bot.GetEventsChannel()
+	eventsChannel := gw.GetEventsChannel()
 	e := <-eventsChannel
 
-	if e.GetSourceIdentifier() != "emersyx-tgbot-test" {
+	if e.GetSourceIdentifier() != "emersyx-tggw-test" {
 		t.Fail()
 		return
 	}

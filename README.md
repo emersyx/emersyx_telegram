@@ -1,10 +1,10 @@
 # emersyx_telegram [![Build Status][build-img]][build-url] [![Go Report Card][gorep-img]][gorep-url]
 
-Telegram bot (i.e. receptor plus resource) for emersyx.
+Telegram gateway (i.e. receptor plus resource) for emersyx.
 
 ## Build
 
-source files in `emtg` provide the implementation of the go plugin. the easiest way to get all dependencies is by using
+Source files in `emtg` provide the implementation of the go plugin. the easiest way to get all dependencies is by using
 the [dep][3] tool. The commands to build the plugin are:
 
 ```
@@ -16,11 +16,11 @@ The resulting `emtg.so` file can then be used by emersyx core.
 
 ## Notes
 
-The `TelegramBot` struct follows the APIs defined in the [emersyx_apis][1] repository, specifically those from the
+The `TelegramGateway` struct follows the APIs defined in the [emersyx_apis][1] repository, specifically those from the
 [emtgapi][2] folder.
 
-The `NewTelegramBot` function must be used to create new `TelegramBot` instances. An example of how to use this function
-can be found in the `emtg/tgbot_test.go` file.
+The `NewTelegramGateway` function must be used to create new `TelegramGateway` instances. An example of how to use this
+function can be found in the `emtg/tggw_test.go` file.
 
 ## tgbotapi
 

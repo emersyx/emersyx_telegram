@@ -9,17 +9,17 @@ import (
 )
 
 // GetIdentifier returns the identifier of this receptor.
-func (bot *TelegramBot) GetIdentifier() string {
-	return bot.identifier
+func (gw *TelegramGateway) GetIdentifier() string {
+	return gw.identifier
 }
 
 // GetEventsChannel returns get emcomapi.Event channel through which this receptor pushes emersyx events.
-func (bot *TelegramBot) GetEventsChannel() chan emcomapi.Event {
-	return bot.updates
+func (gw *TelegramGateway) GetEventsChannel() chan emcomapi.Event {
+	return gw.updates
 }
 
 // GetMe performs a call to the getMe method of the Telegram Bot API.
-func (bot *TelegramBot) GetMe() (emtgapi.User, error) {
+func (gw *TelegramGateway) GetMe() (emtgapi.User, error) {
 	apiresp := apiResponse{}
 	user := emtgapi.User{}
 
@@ -46,7 +46,7 @@ func (bot *TelegramBot) GetMe() (emtgapi.User, error) {
 }
 
 // SendMessage performs a call to the sendMessage method of the Telegram Bot API.
-func (bot *TelegramBot) SendMessage(params emtgapi.TelegramParameters) (emtgapi.Message, error) {
+func (gw *TelegramGateway) SendMessage(params emtgapi.TelegramParameters) (emtgapi.Message, error) {
 	apiresp := apiResponse{}
 	msg := emtgapi.Message{}
 
