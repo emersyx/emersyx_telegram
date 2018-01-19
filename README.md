@@ -1,6 +1,6 @@
 # emersyx_telegram [![Build Status][build-img]][build-url] [![Go Report Card][gorep-img]][gorep-url]
 
-Telegram gateway (i.e. receptor plus resource) for emersyx.
+Telegram gateway (receptor & resource) for emersyx.
 
 ## Build
 
