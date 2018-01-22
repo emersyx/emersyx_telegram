@@ -1,4 +1,4 @@
-# emersyx_telegram [![Build Status][build-img]][build-url] [![Go Report Card][gorep-img]][gorep-url]
+# emersyx_telegram [![Build Status][build-img]][build-url] [![Go Report Card][gorep-img]][gorep-url] [![GoDoc][godep-img]][godep-url]
 
 Telegram gateway (receptor & resource) for emersyx.
 
@@ -34,6 +34,8 @@ For example usage of the `tgbotapi` package, check the `tgbotapi/tgbotapi_test.g
 [build-url]: https://travis-ci.org/emersyx/emersyx_telegram
 [gorep-img]: https://goreportcard.com/badge/github.com/emersyx/emersyx_telegram
 [gorep-url]: https://goreportcard.com/report/github.com/emersyx/emersyx_telegram
+[godep-img]: https://godoc.org/emersyx.net/emersyx_telegram?status.svg
+[godep-url]: https://godoc.org/emersyx.net/emersyx_telegram
 [1]: https://github.com/emersyx/emersyx_apis
 [2]: https://github.com/emersyx/emersyx_apis/tree/master/emtgapi
 [3]: https://github.com/golang/dep
