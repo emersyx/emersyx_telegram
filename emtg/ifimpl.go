@@ -1,4 +1,4 @@
-package main
+package emtg
 
 import (
 	"emersyx.net/emersyx_apis/emcomapi"
