@@ -14,8 +14,8 @@ func (gw *TelegramGateway) GetIdentifier() string {
 }
 
 // GetEventsChannel returns get emcomapi.Event channel through which this receptor pushes emersyx events.
-func (gw *TelegramGateway) GetEventsChannel() chan emcomapi.Event {
-	return gw.updates
+func (gw *TelegramGateway) GetEventsChannel() <-chan emcomapi.Event {
+	return (<-chan emcomapi.Event)(gw.updates)
 }
 
 // GetMe performs a call to the getMe method of the Telegram Bot API.
