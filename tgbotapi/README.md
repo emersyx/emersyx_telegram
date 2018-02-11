@@ -18,5 +18,18 @@ further processed at upper layers.
 
 The bindings are not complete, but required features should be easy to implement by following the provided examples.
 
+## Obtaining the chat_id value
+
+There are two methods of obtaining the `chat_id` value for a particular group, supergroup or private chat. The first one
+involves using the web-based Telegram client. The set of steps is described [here][3]. The second method is to add a bot
+to the group, send a message to the group and then follow this API URL:
+
+```
+https://api.telegram.org/bot<yourtoken>/getUpdates
+```
+
+You will receive JSON formatted data with the correct `chat_id` value.
+
 [1]: https://core.telegram.org/bots/api
 [2]: https://core.telegram.org/bots/api#available-methods
+[3]: https://github.com/GabrielRF/telegram-id#web-channel-id

@@ -44,6 +44,9 @@ func TestGetMe(t *testing.T) {
 func TestSendMessage(t *testing.T) {
 	// in order to obtain the identifier of a user, channel or group, read
 	// https://github.com/GabrielRF/telegram-id#web-channel-id
+	// or simply obtain a token for the Telegram Bot API, send a message to a group that the bot is part of, and go to
+	// https://api.telegram.org/bot<yourtoken>/getUpdates
+	// and you will see JSON formatted data containing the chat_id field
 	params := url.Values{}
 	params.Add("chat_id", *recvID)
 	params.Add("text", "hello world!")
