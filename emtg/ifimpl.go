@@ -77,6 +77,8 @@ func (gw *TelegramGateway) SendMessage(params emtgapi.TelegramParameters) (emtga
 	return msg, nil
 }
 
+// NewTelegramParameters creates and returns a new TelegramParameters object. This object can then be used to configure
+// parameters when performing calls to the Telegram Bot API (e.g. see the TelegramGateway.SendMessage method).
 func (gw *TelegramGateway) NewTelegramParameters() emtgapi.TelegramParameters {
 	params := new(TelegramParameters)
 	params.values = make(map[string][]string)
