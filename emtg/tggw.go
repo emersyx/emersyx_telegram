@@ -55,7 +55,7 @@ func (gw TelegramGateway) getUpdates(offset int64) ([]emtgapi.Update, error) {
 	var apiresp apiResponse
 	var updates []emtgapi.Update
 
-	params := (NewTelegramParameters()).(*TelegramParameters)
+	params := (gw.NewTelegramParameters()).(*TelegramParameters)
 	params.Offset(offset)
 	params.Limit(gw.updatesLimit)
 	params.Timeout(gw.updatesTimeout)

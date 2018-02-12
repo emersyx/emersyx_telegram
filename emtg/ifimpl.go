@@ -76,3 +76,9 @@ func (gw *TelegramGateway) SendMessage(params emtgapi.TelegramParameters) (emtga
 
 	return msg, nil
 }
+
+func (gw *TelegramGateway) NewTelegramParameters() emtgapi.TelegramParameters {
+	params := new(TelegramParameters)
+	params.values = make(map[string][]string)
+	return params
+}

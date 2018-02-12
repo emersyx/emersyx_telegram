@@ -1,7 +1,6 @@
 package emtg
 
 import (
-	"emersyx.net/emersyx_apis/emtgapi"
 	"errors"
 	"net/url"
 	"strconv"
@@ -92,11 +91,4 @@ func (params *TelegramParameters) ReplyMarkup(value string) error {
 	}
 	params.values.Set("reply_markup", value)
 	return nil
-}
-
-// NewTelegramParameters generates a new TelegramParameters object and returns a pointer to it.
-func NewTelegramParameters() emtgapi.TelegramParameters {
-	params := new(TelegramParameters)
-	params.values = make(map[string][]string)
-	return params
 }

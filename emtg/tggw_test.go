@@ -56,7 +56,7 @@ func TestGetMe(t *testing.T) {
 }
 
 func TestSendMessage(t *testing.T) {
-	params := NewTelegramParameters()
+	params := gw.NewTelegramParameters()
 	params.ChatID(*recvID)
 	params.Text("hello world! hello from *emersyx*!")
 	params.ParseMode("Markdown")
