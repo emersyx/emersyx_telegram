@@ -1,4 +1,4 @@
-package emtg
+package main
 
 import (
 	"errors"
