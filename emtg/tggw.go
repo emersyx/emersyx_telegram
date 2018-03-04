@@ -43,8 +43,11 @@ func (gw TelegramGateway) startPollingUpdates() {
 				}
 				gw.updates <- eupdate
 			}
-			// the next offset value is the highest current value plus 1
-			offset = updates[len(updates)-1].UpdateID + 1
+			// if we got any new updates, we need to acknowledge them
+			if len(updates) > 0 {
+				// the next offset value is the highest current value plus 1
+				offset = updates[len(updates)-1].UpdateID + 1
+			}
 		}
 	}()
 }
