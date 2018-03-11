@@ -1,11 +1,11 @@
 emtg.so: goget
-	go build -buildmode=plugin -o emtg.so emtg/*
+	@go build -buildmode=plugin -o emtg.so emtg/*
 
 .PHONY: goget
 goget:
-	go get emersyx.net/emersyx_apis/emcomapi
-	go get emersyx.net/emersyx_apis/emtgapi
-	go get github.com/golang/lint/golint
+	@go get emersyx.net/emersyx_apis/emcomapi
+	@go get emersyx.net/emersyx_apis/emtgapi
+	@go get github.com/golang/lint/golint
 
 .PHONY: test
 test: emtg.so
