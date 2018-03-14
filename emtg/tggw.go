@@ -3,6 +3,7 @@ package main
 import (
 	"emersyx.net/emersyx_apis/emcomapi"
 	"emersyx.net/emersyx_apis/emtgapi"
+	"emersyx.net/emersyx_log/emlog"
 	"emersyx.net/emersyx_telegram/tgbotapi"
 	"encoding/json"
 	"errors"
@@ -17,6 +18,7 @@ type apiResponse struct {
 // TelegramGateway is the type which defines a emtgapi.TelegramGateway implementation, namely a Telegram resource and
 // receptor for the emersyx platform.
 type TelegramGateway struct {
+	log            *emlog.EmersyxLogger
 	identifier     string
 	updatesLimit   uint
 	updatesTimeout uint
@@ -87,6 +89,8 @@ func (gw TelegramGateway) getUpdates(offset int64) ([]emtgapi.Update, error) {
 
 // NewTelegramGateway creates new TelegramGateway instances based on the options given as argument.
 func NewTelegramGateway(options ...func(emtgapi.TelegramGateway) error) (emtgapi.TelegramGateway, error) {
+	var err error
+
 	gw := new(TelegramGateway)
 
 	// create the Updates channel
@@ -95,6 +99,12 @@ func NewTelegramGateway(options ...func(emtgapi.TelegramGateway) error) (emtgapi
 	// initialize default values for options
 	gw.updatesLimit = 100
 	gw.updatesTimeout = 60
+
+	// generate a bare logger, to be updated via options
+	gw.log, err = emlog.NewEmersyxLogger(nil, "", emlog.ELNone)
+	if err != nil {
+		return nil, errors.New("could not create a bare logger")
+	}
 
 	// apply the options received as argument
 	for _, option := range options {

@@ -4,11 +4,28 @@ import (
 	"emersyx.net/emersyx_apis/emtgapi"
 	"emersyx.net/emersyx_telegram/tgbotapi"
 	"errors"
+	"io"
 )
 
 // TelegramOptions implements the emtgapi.TelegramOptions interface. Each method returns a function, which applies a
 // specific configuration to a TelegramGateway object.
 type TelegramOptions struct {
+}
+
+// Logging sets the io.Writer instance to write logging messages to and the verbosity level.
+func (o TelegramOptions) Logging(writer io.Writer, level uint) func(emtgapi.TelegramGateway) error {
+	return func(gw emtgapi.TelegramGateway) error {
+		if writer == nil {
+			return errors.New("writer argument cannot be nil")
+		}
+		cgw, ok := gw.(*TelegramGateway)
+		if ok == false {
+			return errors.New("unsupported TelegramGateway implementation")
+		}
+		cgw.log.SetOutput(writer)
+		cgw.log.SetLevel(level)
+		return nil
+	}
 }
 
 // Identifier sets the receptor identifier value for the Telegram gateway.
@@ -22,6 +39,7 @@ func (o TelegramOptions) Identifier(id string) func(emtgapi.TelegramGateway) err
 			return errors.New("unsupported TelegramGateway implementation")
 		}
 		cgw.identifier = id
+		cgw.log.SetComponentID(id)
 		return nil
 	}
 }
