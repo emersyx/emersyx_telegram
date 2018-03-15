@@ -34,10 +34,12 @@ func (gw TelegramGateway) startPollingUpdates() {
 		for {
 			updates, err := gw.getUpdates(offset)
 			if err != nil {
+				gw.log.Errorf("received error while getting updates %s\n", err.Error())
 				// if an error occurs, wait for 5 seconds
 				time.Sleep(5)
 				continue
 			}
+			gw.log.Debugf("received %d update(s)\n", len(updates))
 			for _, update := range updates {
 				eupdate := emtgapi.EUpdate{
 					Update: update,
@@ -47,6 +49,7 @@ func (gw TelegramGateway) startPollingUpdates() {
 			}
 			// if we got any new updates, we need to acknowledge them
 			if len(updates) > 0 {
+				gw.log.Debugln("acknowledging updates to the Telegram Bot back-end")
 				// the next offset value is the highest current value plus 1
 				offset = updates[len(updates)-1].UpdateID + 1
 			}
