@@ -19,6 +19,7 @@ type apiResponse struct {
 // receptor for the emersyx platform.
 type TelegramGateway struct {
 	log            *emlog.EmersyxLogger
+	isInitialized  bool
 	identifier     string
 	updatesLimit   uint
 	updatesTimeout uint

@@ -76,7 +76,7 @@ func TestSendMessage(t *testing.T) {
 }
 
 func TestGetUpdates(t *testing.T) {
-	eventsChannel := gw.GetEventsChannel()
+	eventsChannel := gw.GetEventsOutChannel()
 	e := <-eventsChannel
 
 	if e.GetSourceIdentifier() != "emersyx-tggw-test" {

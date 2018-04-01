@@ -13,11 +13,6 @@ func (gw *TelegramGateway) GetIdentifier() string {
 	return gw.identifier
 }
 
-// GetEventsChannel returns get emcomapi.Event channel through which this receptor pushes emersyx events.
-func (gw *TelegramGateway) GetEventsChannel() <-chan emcomapi.Event {
-	return (<-chan emcomapi.Event)(gw.updates)
-}
-
 // GetMe performs a call to the getMe method of the Telegram Bot API.
 func (gw *TelegramGateway) GetMe() (emtgapi.User, error) {
 	apiresp := apiResponse{}
@@ -83,4 +78,15 @@ func (gw *TelegramGateway) NewTelegramParameters() emtgapi.TelegramParameters {
 	params := new(TelegramParameters)
 	params.values = make(map[string][]string)
 	return params
+}
+
+// GetEventsOutChannel returns the emcomapi.Event channel through which emersyx events are pushed by this gateway.
+func (gw *TelegramGateway) GetEventsOutChannel() <-chan emcomapi.Event {
+	return (<-chan emcomapi.Event)(gw.updates)
+}
+
+// GetEventsInChannel returns the emcomapi.CoreEvent channel through which core events are received by the gateway
+// instance.
+func (gw *TelegramGateway) GetEventsInChannel() chan<- emcomapi.CoreEvent {
+	return nil
 }
