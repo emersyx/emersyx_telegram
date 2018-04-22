@@ -1,7 +1,7 @@
 package main
 
 import (
-	"emersyx.net/emersyx_apis/emtgapi"
+	"emersyx.net/emersyx/api/tgapi"
 	"flag"
 	"fmt"
 	"os"
@@ -11,26 +11,33 @@ import (
 var token = flag.String("apitoken", "", "Telegram BOT API token")
 var recvID = flag.String("recvid", "", "Receiver of test messages")
 var updateOffset = flag.Int64("updoffset", 0, "Value for the offset parameter when calling the getUpdates method.")
-var gw emtgapi.TelegramGateway
+var conffile = flag.String("conffile", "", "path to toml configuration file")
+var gw tgapi.TelegramGateway
 
 func TestMain(m *testing.M) {
 	var err error
+	var ok bool
 
 	// get the command line flags
 	flag.Parse()
 
 	// generate a TelegramOptions object and set the options for the TelegramGateway
-	opt := NewTelegramOptions()
+	opt := NewPeripheralOptions()
 
 	// create the telegram bot
 	// in this implementation, the NewTelegramGateway function also makes a call to getMe
-	gw, err = NewTelegramGateway(
-		opt.APIToken(*token),
+	peripheral, err := NewPeripheral(
 		opt.Identifier("emersyx-tggw-test"),
+		opt.ConfigPath(*conffile),
 	)
-
 	if err != nil {
 		fmt.Println(err.Error())
+		return
+	}
+
+	gw, ok = peripheral.(*TelegramGateway)
+	if ok != true {
+		fmt.Println("invalid peripheral type")
 	} else {
 		// run the tests
 		os.Exit(m.Run())
@@ -84,9 +91,9 @@ func TestGetUpdates(t *testing.T) {
 		return
 	}
 
-	eu, ok := e.(emtgapi.EUpdate)
+	eu, ok := e.(tgapi.EUpdate)
 	if ok == false {
-		t.Log("The event type is not emtgapi.EUpdate.")
+		t.Log("The event type is not tgapi.EUpdate.")
 		t.Fail()
 		return
 	}

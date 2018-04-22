@@ -1,8 +1,8 @@
 package main
 
 import (
-	"emersyx.net/emersyx_apis/emcomapi"
-	"emersyx.net/emersyx_apis/emtgapi"
+	"emersyx.net/emersyx/api"
+	"emersyx.net/emersyx/api/tgapi"
 	"emersyx.net/emersyx_telegram/tgbotapi"
 	"encoding/json"
 	"errors"
@@ -14,9 +14,9 @@ func (gw *TelegramGateway) GetIdentifier() string {
 }
 
 // GetMe performs a call to the getMe method of the Telegram Bot API.
-func (gw *TelegramGateway) GetMe() (emtgapi.User, error) {
+func (gw *TelegramGateway) GetMe() (tgapi.User, error) {
 	apiresp := apiResponse{}
-	user := emtgapi.User{}
+	user := tgapi.User{}
 
 	resp, err := tgbotapi.GetMe()
 	if err != nil {
@@ -41,9 +41,9 @@ func (gw *TelegramGateway) GetMe() (emtgapi.User, error) {
 }
 
 // SendMessage performs a call to the sendMessage method of the Telegram Bot API.
-func (gw *TelegramGateway) SendMessage(params emtgapi.TelegramParameters) (emtgapi.Message, error) {
+func (gw *TelegramGateway) SendMessage(params tgapi.TelegramParameters) (tgapi.Message, error) {
 	apiresp := apiResponse{}
-	msg := emtgapi.Message{}
+	msg := tgapi.Message{}
 
 	cparams, ok := params.(*TelegramParameters)
 	if ok == false {
@@ -74,19 +74,19 @@ func (gw *TelegramGateway) SendMessage(params emtgapi.TelegramParameters) (emtga
 
 // NewTelegramParameters creates and returns a new TelegramParameters object. This object can then be used to configure
 // parameters when performing calls to the Telegram Bot API (e.g. see the TelegramGateway.SendMessage method).
-func (gw *TelegramGateway) NewTelegramParameters() emtgapi.TelegramParameters {
+func (gw *TelegramGateway) NewTelegramParameters() tgapi.TelegramParameters {
 	params := new(TelegramParameters)
 	params.values = make(map[string][]string)
 	return params
 }
 
-// GetEventsOutChannel returns the emcomapi.Event channel through which emersyx events are pushed by this gateway.
-func (gw *TelegramGateway) GetEventsOutChannel() <-chan emcomapi.Event {
-	return (<-chan emcomapi.Event)(gw.updates)
+// GetEventsOutChannel returns the api.Event channel through which emersyx events are pushed by this gateway.
+func (gw *TelegramGateway) GetEventsOutChannel() <-chan api.Event {
+	return (<-chan api.Event)(gw.updates)
 }
 
-// GetEventsInChannel returns the emcomapi.CoreEvent channel through which core events are received by the gateway
+// GetEventsInChannel returns the api.CoreEvent channel through which core events are received by the gateway
 // instance.
-func (gw *TelegramGateway) GetEventsInChannel() chan<- emcomapi.CoreEvent {
+func (gw *TelegramGateway) GetEventsInChannel() chan<- api.Event {
 	return nil
 }

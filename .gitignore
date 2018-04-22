@@ -15,3 +15,6 @@
 
 # The vendor folder creted by dep
 vendor
+
+# The toml config file with test values.
+config.nocommit.toml

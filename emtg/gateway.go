@@ -1,9 +1,9 @@
 package main
 
 import (
-	"emersyx.net/emersyx_apis/emcomapi"
-	"emersyx.net/emersyx_apis/emtgapi"
-	"emersyx.net/emersyx_log/emlog"
+	"emersyx.net/emersyx/api"
+	"emersyx.net/emersyx/api/tgapi"
+	"emersyx.net/emersyx/log"
 	"emersyx.net/emersyx_telegram/tgbotapi"
 	"encoding/json"
 	"errors"
@@ -15,20 +15,21 @@ type apiResponse struct {
 	Result json.RawMessage `json:"result"`
 }
 
-// TelegramGateway is the type which defines a emtgapi.TelegramGateway implementation, namely a Telegram resource and
+// TelegramGateway is the type which defines a tgapi.TelegramGateway implementation, namely a Telegram resource and
 // receptor for the emersyx platform.
 type TelegramGateway struct {
-	log            *emlog.EmersyxLogger
+	core           api.Core
+	log            *log.EmersyxLogger
 	isInitialized  bool
 	identifier     string
 	updatesLimit   uint
 	updatesTimeout uint
 	updatesAllowed []string
-	updates        chan emcomapi.Event
+	updates        chan api.Event
 }
 
 // startPollingUpdates start the process of calling the getUpdates method from the Telegram Bot API, converting the data
-// to emtgapi.EUpdate objects and pushing them through the events channel of the TelegramGateway instance.
+// to tgapi.EUpdate objects and pushing them through the events channel of the TelegramGateway instance.
 func (gw TelegramGateway) startPollingUpdates() {
 	go func() {
 		var offset int64
@@ -42,7 +43,7 @@ func (gw TelegramGateway) startPollingUpdates() {
 			}
 			gw.log.Debugf("received %d update(s)\n", len(updates))
 			for _, update := range updates {
-				eupdate := emtgapi.EUpdate{
+				eupdate := tgapi.EUpdate{
 					Update: update,
 					Source: gw.identifier,
 				}
@@ -58,11 +59,11 @@ func (gw TelegramGateway) startPollingUpdates() {
 	}()
 }
 
-// getUpdates performs calls to the getUpdates method of the Telegram Bot API and converts the data into emtgapi.Update
+// getUpdates performs calls to the getUpdates method of the Telegram Bot API and converts the data into tgapi.Update
 // instances.
-func (gw TelegramGateway) getUpdates(offset int64) ([]emtgapi.Update, error) {
+func (gw TelegramGateway) getUpdates(offset int64) ([]tgapi.Update, error) {
 	var apiresp apiResponse
-	var updates []emtgapi.Update
+	var updates []tgapi.Update
 
 	params := (gw.NewTelegramParameters()).(*TelegramParameters)
 	params.Offset(offset)
@@ -91,21 +92,21 @@ func (gw TelegramGateway) getUpdates(offset int64) ([]emtgapi.Update, error) {
 	return updates, nil
 }
 
-// NewTelegramGateway creates new TelegramGateway instances based on the options given as argument.
-func NewTelegramGateway(options ...func(emtgapi.TelegramGateway) error) (emtgapi.TelegramGateway, error) {
+// NewPeripheral creates a new TelegramGateway instances based on the options given as argument.
+func NewPeripheral(options ...func(api.Peripheral) error) (api.Peripheral, error) {
 	var err error
 
 	gw := new(TelegramGateway)
 
 	// create the Updates channel
-	gw.updates = make(chan emcomapi.Event)
+	gw.updates = make(chan api.Event)
 
 	// initialize default values for options
 	gw.updatesLimit = 100
 	gw.updatesTimeout = 60
 
 	// generate a bare logger, to be updated via options
-	gw.log, err = emlog.NewEmersyxLogger(nil, "", emlog.ELNone)
+	gw.log, err = log.NewEmersyxLogger(nil, "", log.ELNone)
 	if err != nil {
 		return nil, errors.New("could not create a bare logger")
 	}
