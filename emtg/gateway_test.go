@@ -1,6 +1,7 @@
 package main
 
 import (
+	"emersyx.net/emersyx/api"
 	"emersyx.net/emersyx/api/tgapi"
 	"flag"
 	"fmt"
@@ -21,14 +22,13 @@ func TestMain(m *testing.M) {
 	// get the command line flags
 	flag.Parse()
 
-	// generate a TelegramOptions object and set the options for the TelegramGateway
-	opt := NewPeripheralOptions()
-
 	// create the telegram bot
 	// in this implementation, the NewTelegramGateway function also makes a call to getMe
 	peripheral, err := NewPeripheral(
-		opt.Identifier("emersyx-tggw-test"),
-		opt.ConfigPath(*conffile),
+		api.PeripheralOptions{
+			Identifier: "emersyx-tggw-test",
+			ConfigPath: *conffile,
+		},
 	)
 	if err != nil {
 		fmt.Println(err.Error())

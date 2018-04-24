@@ -7,6 +7,7 @@ import (
 	"emersyx.net/emersyx_telegram/tgbotapi"
 	"encoding/json"
 	"errors"
+	"github.com/BurntSushi/toml"
 	"time"
 )
 
@@ -93,8 +94,11 @@ func (gw TelegramGateway) getUpdates(offset int64) ([]tgapi.Update, error) {
 }
 
 // NewPeripheral creates a new TelegramGateway instances based on the options given as argument.
-func NewPeripheral(options ...func(api.Peripheral) error) (api.Peripheral, error) {
-	var err error
+func NewPeripheral(opts api.PeripheralOptions) (api.Peripheral, error) {
+	// validate identifier in options
+	if len(opts.Identifier) == 0 {
+		return nil, errors.New("identifier cannot have 0 length")
+	}
 
 	gw := new(TelegramGateway)
 
@@ -106,18 +110,27 @@ func NewPeripheral(options ...func(api.Peripheral) error) (api.Peripheral, error
 	gw.updatesTimeout = 60
 
 	// generate a bare logger, to be updated via options
-	gw.log, err = log.NewEmersyxLogger(nil, "", log.ELNone)
-	if err != nil {
+	if log, err := log.NewEmersyxLogger(nil, "", log.ELNone); err != nil {
+		gw.log = log
 		return nil, errors.New("could not create a bare logger")
 	}
 
 	// apply the options received as argument
-	for _, option := range options {
-		err := option(gw)
-		if err != nil {
-			return nil, err
-		}
+	gw.identifier = opts.Identifier
+	gw.core = opts.Core
+	gw.log.SetOutput(opts.LogWriter)
+	gw.log.SetLevel(opts.LogLevel)
+	gw.log.SetComponentID(gw.identifier)
+
+	// apply the extended options from the config file
+	config := new(telegramGatewayConfig)
+	if _, err := toml.DecodeFile(opts.ConfigPath, config); err != nil {
+		return nil, err
 	}
+	if err := config.validate(); err != nil {
+		return nil, err
+	}
+	config.apply(gw)
 
 	// start polling the Telegram servers for updates
 	gw.startPollingUpdates()
