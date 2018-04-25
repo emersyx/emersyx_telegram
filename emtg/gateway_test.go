@@ -3,6 +3,7 @@ package main
 import (
 	"emersyx.net/emersyx/api"
 	"emersyx.net/emersyx/api/tgapi"
+	"emersyx.net/emersyx/log"
 	"flag"
 	"fmt"
 	"os"
@@ -28,6 +29,8 @@ func TestMain(m *testing.M) {
 		api.PeripheralOptions{
 			Identifier: "emersyx-tggw-test",
 			ConfigPath: *conffile,
+			LogWriter:  os.Stdout,
+			LogLevel:   log.ELDebug,
 		},
 	)
 	if err != nil {

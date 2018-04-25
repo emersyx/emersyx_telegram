@@ -1,10 +1,19 @@
 package main
 
 import (
+	"emersyx.net/emersyx/api/tgapi"
 	"errors"
 	"net/url"
 	"strconv"
 )
+
+func paramVals(params tgapi.TelegramParameters) (url.Values, error) {
+	cparams, ok := params.(*TelegramParameters)
+	if ok == false {
+		return nil, errors.New("unsuppored TelegramParameters implementation")
+	}
+	return cparams.values, nil
+}
 
 // TelegramParameters is the type which is used to set values for parameters when making calls to the Telegram Bot API.
 type TelegramParameters struct {

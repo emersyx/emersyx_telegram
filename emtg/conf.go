@@ -1,7 +1,6 @@
 package main
 
 import (
-	"emersyx.net/emersyx_telegram/tgbotapi"
 	"errors"
 )
 
@@ -35,8 +34,7 @@ func (cfg *telegramGatewayConfig) validate() error {
 }
 
 func (cfg *telegramGatewayConfig) apply(gw *TelegramGateway) error {
-	err := tgbotapi.Initialize(*cfg.APIToken)
-	if err == nil {
+	if err := gw.setAPIToken(*cfg.APIToken); err == nil {
 		return err
 	}
 	gw.updatesLimit = *cfg.UpdatesLimit
