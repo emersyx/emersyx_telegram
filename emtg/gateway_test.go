@@ -23,8 +23,7 @@ func TestMain(m *testing.M) {
 	// get the command line flags
 	flag.Parse()
 
-	// create the telegram bot
-	// in this implementation, the NewTelegramGateway function also makes a call to getMe
+	// create a new TelegramGateway
 	peripheral, err := NewPeripheral(
 		api.PeripheralOptions{
 			Identifier: "emersyx-tggw-test",
