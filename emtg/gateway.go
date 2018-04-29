@@ -3,7 +3,6 @@ package main
 import (
 	"emersyx.net/emersyx/api"
 	"emersyx.net/emersyx/api/tgapi"
-	"emersyx.net/emersyx/log"
 	"errors"
 	"github.com/BurntSushi/toml"
 	"time"
@@ -14,7 +13,7 @@ import (
 type TelegramGateway struct {
 	identifier     string
 	core           api.Core
-	log            *log.EmersyxLogger
+	log            *api.EmersyxLogger
 	apiToken       string
 	updatesLimit   uint
 	updatesTimeout uint
@@ -82,18 +81,12 @@ func NewPeripheral(opts api.PeripheralOptions) (api.Peripheral, error) {
 	gw.updatesLimit = 100
 	gw.updatesTimeout = 60
 
-	// generate a bare logger, to be updated via options
-	gw.log, err = log.NewEmersyxLogger(nil, "", log.ELNone)
+	gw.identifier = opts.Identifier
+	gw.core = opts.Core
+	gw.log, err = api.NewEmersyxLogger(opts.LogWriter, opts.Identifier, opts.LogLevel)
 	if err != nil {
 		return nil, errors.New("could not create a bare logger")
 	}
-
-	// apply the options received as argument
-	gw.identifier = opts.Identifier
-	gw.core = opts.Core
-	gw.log.SetOutput(opts.LogWriter)
-	gw.log.SetLevel(opts.LogLevel)
-	gw.log.SetComponentID(gw.identifier)
 
 	// apply the extended options from the config file
 	config := new(telegramGatewayConfig)

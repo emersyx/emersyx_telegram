@@ -4,7 +4,6 @@ emtg.so: goget
 .PHONY: goget
 goget:
 	@go get emersyx.net/emersyx/api
-	@go get emersyx.net/emersyx/log
 	@go get github.com/golang/lint/golint
 	@go get github.com/BurntSushi/toml
 

@@ -36,12 +36,15 @@ func (gw *TelegramGateway) sendAPIRequest(apiMethod string, params url.Values) (
 
 	if err != nil {
 		return nil, err
-	} else if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("returned HTTP status code is %s", resp.Status)
 	}
 
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(resp.Body)
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("api response - %s\n%s", resp.Status, buf.String())
+	}
+
 	err = json.Unmarshal(buf.Bytes(), apiresp)
 	if err != nil {
 		return nil, err
