@@ -4,6 +4,8 @@ import (
 	"errors"
 )
 
+// telegramGatewayConfig is the struct for holding Telegram gateway configuration values, loaded from the configuration
+// file.
 type telegramGatewayConfig struct {
 	APIToken       *string   `toml:"api_token"`
 	UpdatesLimit   *uint     `toml:"updates_limit"`
@@ -11,6 +13,8 @@ type telegramGatewayConfig struct {
 	UpdatesAllowed *[]string `toml:"updates_allowed"`
 }
 
+// validate checks the values loaded from the toml configuration file. If any value is found to be invalid, then an
+// error is returned.
 func (cfg *telegramGatewayConfig) validate() error {
 	if cfg.APIToken == nil {
 		return errors.New("telegram Bot API token not set")
@@ -33,6 +37,7 @@ func (cfg *telegramGatewayConfig) validate() error {
 	return nil
 }
 
+// apply sets the values loaded from the toml configuration file into the ircGateway object received as argument.
 func (cfg *telegramGatewayConfig) apply(gw *TelegramGateway) error {
 	if err := gw.setAPIToken(*cfg.APIToken); err == nil {
 		return err

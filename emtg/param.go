@@ -7,6 +7,8 @@ import (
 	"strconv"
 )
 
+// paramVals asserts the type of the params argument to TelegramParameters. If the assertion is valid, then the function
+// returns the values field.
 func paramVals(params tgapi.TelegramParameters) (url.Values, error) {
 	cparams, ok := params.(*TelegramParameters)
 	if ok == false {
