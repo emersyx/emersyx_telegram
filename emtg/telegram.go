@@ -72,10 +72,10 @@ func (gw *telegramGateway) setAPIToken(token string) error {
 	return nil
 }
 
-// NewTelegramParameters creates and returns a new TelegramParameters object. This object can then be used to configure
+// NewTelegramParameters creates and returns a new telegramParameters object. This object can then be used to configure
 // parameters when performing calls to the Telegram Bot API (e.g. see the telegramGateway.SendMessage method).
 func (gw *telegramGateway) NewTelegramParameters() tgapi.TelegramParameters {
-	params := new(TelegramParameters)
+	params := new(telegramParameters)
 	params.values = make(map[string][]string)
 	return params
 }
@@ -83,7 +83,7 @@ func (gw *telegramGateway) NewTelegramParameters() tgapi.TelegramParameters {
 // getUpdates performs calls to the getUpdates method of the Telegram Bot API and converts the data into tgapi.Update
 // instances.
 func (gw *telegramGateway) getUpdates(offset int64) (updates []tgapi.Update, err error) {
-	params := gw.NewTelegramParameters().(*TelegramParameters)
+	params := gw.NewTelegramParameters().(*telegramParameters)
 	params.Offset(offset)
 	params.Limit(gw.updatesLimit)
 	params.Timeout(gw.updatesTimeout)
