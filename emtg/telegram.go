@@ -15,15 +15,15 @@ type apiResponse struct {
 	Result json.RawMessage `json:"result"`
 }
 
-// telegramURL builds the URL for the Telegram Bot API, with the API token of the TelegramGateway instance and for the
+// telegramURL builds the URL for the Telegram Bot API, with the API token of the telegramGateway instance and for the
 // specified API method.
-func (gw *TelegramGateway) telegramURL(apiMethod string) string {
+func (gw *telegramGateway) telegramURL(apiMethod string) string {
 	return "https://api.telegram.org/bot" + gw.apiToken + "/" + apiMethod
 }
 
 // sendAPIRequest perfoms an HTTP GET or POST request to the Telegram Bot API. If parameters are given as argument, then
 // a POST request is made, otherwise a GET request is made. The response is parsed and returned.
-func (gw *TelegramGateway) sendAPIRequest(apiMethod string, params url.Values) (*apiResponse, error) {
+func (gw *telegramGateway) sendAPIRequest(apiMethod string, params url.Values) (*apiResponse, error) {
 	var err error
 	var resp *http.Response
 	apiresp := new(apiResponse)
@@ -57,9 +57,9 @@ func (gw *TelegramGateway) sendAPIRequest(apiMethod string, params url.Values) (
 	return apiresp, nil
 }
 
-// setAPIToken sets the Telegram Bot API token for the TelegramGateway instance and validates it by performing a request
+// setAPIToken sets the Telegram Bot API token for the telegramGateway instance and validates it by performing a request
 // with the getMe method.
-func (gw *TelegramGateway) setAPIToken(token string) error {
+func (gw *telegramGateway) setAPIToken(token string) error {
 	// check that the token is not an empty string
 	if len(token) == 0 {
 		return errors.New("the API token cannot have zero length")
@@ -73,8 +73,8 @@ func (gw *TelegramGateway) setAPIToken(token string) error {
 }
 
 // NewTelegramParameters creates and returns a new TelegramParameters object. This object can then be used to configure
-// parameters when performing calls to the Telegram Bot API (e.g. see the TelegramGateway.SendMessage method).
-func (gw *TelegramGateway) NewTelegramParameters() tgapi.TelegramParameters {
+// parameters when performing calls to the Telegram Bot API (e.g. see the telegramGateway.SendMessage method).
+func (gw *telegramGateway) NewTelegramParameters() tgapi.TelegramParameters {
 	params := new(TelegramParameters)
 	params.values = make(map[string][]string)
 	return params
@@ -82,7 +82,7 @@ func (gw *TelegramGateway) NewTelegramParameters() tgapi.TelegramParameters {
 
 // getUpdates performs calls to the getUpdates method of the Telegram Bot API and converts the data into tgapi.Update
 // instances.
-func (gw TelegramGateway) getUpdates(offset int64) (updates []tgapi.Update, err error) {
+func (gw *telegramGateway) getUpdates(offset int64) (updates []tgapi.Update, err error) {
 	params := gw.NewTelegramParameters().(*TelegramParameters)
 	params.Offset(offset)
 	params.Limit(gw.updatesLimit)
@@ -102,7 +102,7 @@ func (gw TelegramGateway) getUpdates(offset int64) (updates []tgapi.Update, err 
 }
 
 // GetMe performs a call to the getMe method of the Telegram Bot API.
-func (gw *TelegramGateway) GetMe() (user tgapi.User, err error) {
+func (gw *telegramGateway) GetMe() (user tgapi.User, err error) {
 	apiresp, err := gw.sendAPIRequest("getMe", nil)
 	if err != nil {
 		return user, err
@@ -117,7 +117,7 @@ func (gw *TelegramGateway) GetMe() (user tgapi.User, err error) {
 }
 
 // SendMessage performs a call to the sendMessage method of the Telegram Bot API.
-func (gw *TelegramGateway) SendMessage(params tgapi.TelegramParameters) (msg tgapi.Message, err error) {
+func (gw *telegramGateway) SendMessage(params tgapi.TelegramParameters) (msg tgapi.Message, err error) {
 	cparams, err := paramVals(params)
 	if err != nil {
 		return msg, err

@@ -38,7 +38,7 @@ func (cfg *telegramGatewayConfig) validate() error {
 }
 
 // apply sets the values loaded from the toml configuration file into the ircGateway object received as argument.
-func (cfg *telegramGatewayConfig) apply(gw *TelegramGateway) error {
+func (cfg *telegramGatewayConfig) apply(gw *telegramGateway) error {
 	if err := gw.setAPIToken(*cfg.APIToken); err == nil {
 		return err
 	}

@@ -8,9 +8,9 @@ import (
 	"time"
 )
 
-// TelegramGateway is the type which defines a tgapi.TelegramGateway implementation, namely a Telegram resource and
+// telegramGateway is the type which defines a tgapi.TelegramGateway implementation, namely a Telegram resource and
 // receptor for the emersyx platform.
-type TelegramGateway struct {
+type telegramGateway struct {
 	identifier     string
 	core           api.Core
 	log            *api.EmersyxLogger
@@ -22,8 +22,8 @@ type TelegramGateway struct {
 }
 
 // startPollingUpdates start the process of calling the getUpdates method from the Telegram Bot API, converting the data
-// to tgapi.EUpdate objects and pushing them through the events channel of the TelegramGateway instance.
-func (gw TelegramGateway) startPollingUpdates() {
+// to tgapi.EUpdate objects and pushing them through the events channel of the telegramGateway instance.
+func (gw *telegramGateway) startPollingUpdates() {
 	go func() {
 		var offset int64
 		for {
@@ -53,17 +53,17 @@ func (gw TelegramGateway) startPollingUpdates() {
 }
 
 // GetIdentifier returns the identifier of this gateway.
-func (gw *TelegramGateway) GetIdentifier() string {
+func (gw *telegramGateway) GetIdentifier() string {
 	return gw.identifier
 }
 
 // GetEventsOutChannel returns the api.Event channel through which emersyx events are pushed by this gateway. This
 // function is required to implement the api.Receptor interface.
-func (gw *TelegramGateway) GetEventsOutChannel() <-chan api.Event {
+func (gw *telegramGateway) GetEventsOutChannel() <-chan api.Event {
 	return (<-chan api.Event)(gw.updates)
 }
 
-// NewPeripheral creates a new TelegramGateway instances based on the options given as argument.
+// NewPeripheral creates a new telegramGateway instances based on the options given as argument.
 func NewPeripheral(opts api.PeripheralOptions) (api.Peripheral, error) {
 	var err error
 
@@ -72,7 +72,7 @@ func NewPeripheral(opts api.PeripheralOptions) (api.Peripheral, error) {
 		return nil, errors.New("identifier cannot have 0 length")
 	}
 
-	gw := new(TelegramGateway)
+	gw := new(telegramGateway)
 
 	// create the Updates channel
 	gw.updates = make(chan api.Event)

@@ -22,7 +22,7 @@ func TestMain(m *testing.M) {
 	// get the command line flags
 	flag.Parse()
 
-	// create a new TelegramGateway
+	// create a new telegramGateway
 	peripheral, err := NewPeripheral(
 		api.PeripheralOptions{
 			Identifier: "emersyx-tggw-test",
@@ -36,7 +36,7 @@ func TestMain(m *testing.M) {
 		return
 	}
 
-	gw, ok = peripheral.(*TelegramGateway)
+	gw, ok = peripheral.(*telegramGateway)
 	if ok != true {
 		fmt.Println("invalid peripheral type")
 	} else {
