@@ -1,27 +1,13 @@
 # emersyx_telegram [![Build Status][build-img]][build-url] [![Go Report Card][gorep-img]][gorep-url] [![GoDoc][godep-img]][godep-url]
 
-Telegram gateway (receptor & resource) for emersyx.
+This is the vanilla Telegram gateway implementation for the emersyx platform. This gateway acts as both peripheral and
+receptor simultaneously.
 
-## Build
+## Usage
 
 Source files in `emtg` provide the implementation of the go plugin. The plugin can be built by running `make`. The
-resulting `emtg.so` file can then be used by emersyx core.
-
-## Notes
-
-The `TelegramGateway` struct follows the APIs defined in the [emersyx_apis][1] repository, specifically those from the
-[emtgapi][2] folder.
-
-The `NewTelegramGateway` function must be used to create new `TelegramGateway` instances. An example of how to use this
-function can be found in the `emtg/tggw_test.go` file.
-
-## tgbotapi
-
-The core functionality for interacting with the Telegram Bot back-end is provided by the `tgbotapi` package. This
-package provides low level access to the back-end using only functionality from the standard go library. This package is
-not directly used by emersyx and in theory can be re-used in other projects.
-
-For example usage of the `tgbotapi` package, check the `tgbotapi/tgbotapi_test.go` file.
+resulting `emtg.so` file can then be used by emersyx core and router implementations from the [main emersyx
+repository][emersyx-repo].
 
 [build-img]: https://travis-ci.org/emersyx/emersyx_telegram.svg?branch=master
 [build-url]: https://travis-ci.org/emersyx/emersyx_telegram
@@ -29,5 +15,4 @@ For example usage of the `tgbotapi` package, check the `tgbotapi/tgbotapi_test.g
 [gorep-url]: https://goreportcard.com/report/github.com/emersyx/emersyx_telegram
 [godep-img]: https://godoc.org/emersyx.net/emersyx_telegram?status.svg
 [godep-url]: https://godoc.org/emersyx.net/emersyx_telegram
-[1]: https://github.com/emersyx/emersyx_apis
-[2]: https://github.com/emersyx/emersyx_apis/tree/master/emtgapi
+[emersyx-repo]: https://github.com/emersyx/emersyx
