@@ -3,7 +3,6 @@ package main
 import (
 	"emersyx.net/emersyx/api"
 	"emersyx.net/emersyx/api/tgapi"
-	"errors"
 	"github.com/BurntSushi/toml"
 	"time"
 )
@@ -11,9 +10,7 @@ import (
 // telegramGateway is the type which defines a tgapi.TelegramGateway implementation, namely a Telegram resource and
 // receptor for the emersyx platform.
 type telegramGateway struct {
-	identifier     string
-	core           api.Core
-	log            *api.EmersyxLogger
+	api.PeripheralBase
 	apiToken       string
 	updatesLimit   uint
 	updatesTimeout uint
@@ -29,22 +26,22 @@ func (gw *telegramGateway) startPollingUpdates() {
 		for {
 			updates, err := gw.getUpdates(offset)
 			if err != nil {
-				gw.log.Errorf("received error while getting updates %s\n", err.Error())
+				gw.Log.Errorf("received error while getting updates %s\n", err.Error())
 				// if an error occurs, wait for 5 seconds
 				time.Sleep(5)
 				continue
 			}
-			gw.log.Debugf("received %d update(s)\n", len(updates))
+			gw.Log.Debugf("received %d update(s)\n", len(updates))
 			for _, update := range updates {
 				eupdate := tgapi.EUpdate{
 					Update: update,
-					Source: gw.identifier,
+					Source: gw.Identifier,
 				}
 				gw.updates <- eupdate
 			}
 			// if we got any new updates, we need to acknowledge them
 			if len(updates) > 0 {
-				gw.log.Debugln("acknowledging updates to the Telegram Bot back-end")
+				gw.Log.Debugln("acknowledging updates to the Telegram Bot back-end")
 				// the next offset value is the highest current value plus 1
 				offset = updates[len(updates)-1].UpdateID + 1
 			}
@@ -54,7 +51,7 @@ func (gw *telegramGateway) startPollingUpdates() {
 
 // GetIdentifier returns the identifier of this gateway.
 func (gw *telegramGateway) GetIdentifier() string {
-	return gw.identifier
+	return gw.Identifier
 }
 
 // GetEventsOutChannel returns the api.Event channel through which emersyx events are pushed by this gateway. This
@@ -67,12 +64,9 @@ func (gw *telegramGateway) GetEventsOutChannel() <-chan api.Event {
 func NewPeripheral(opts api.PeripheralOptions) (api.Peripheral, error) {
 	var err error
 
-	// validate identifier in options
-	if len(opts.Identifier) == 0 {
-		return nil, errors.New("identifier cannot have 0 length")
-	}
-
+	// create a new telegramGateway and initialize the base
 	gw := new(telegramGateway)
+	gw.InitializeBase(opts)
 
 	// create the Updates channel
 	gw.updates = make(chan api.Event)
@@ -80,13 +74,6 @@ func NewPeripheral(opts api.PeripheralOptions) (api.Peripheral, error) {
 	// initialize default values for options
 	gw.updatesLimit = 100
 	gw.updatesTimeout = 60
-
-	gw.identifier = opts.Identifier
-	gw.core = opts.Core
-	gw.log, err = api.NewEmersyxLogger(opts.LogWriter, opts.Identifier, opts.LogLevel)
-	if err != nil {
-		return nil, errors.New("could not create a bare logger")
-	}
 
 	// apply the extended options from the config file
 	config := new(telegramGatewayConfig)
