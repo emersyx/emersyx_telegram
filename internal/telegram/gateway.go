@@ -1,15 +1,14 @@
 package main
 
 import (
-	"emersyx.net/emersyx/api"
-	"emersyx.net/emersyx/api/tgapi"
+	"emersyx.net/emersyx/pkg/api"
 	"github.com/BurntSushi/toml"
 	"time"
 )
 
-// telegramGateway is the type which defines a tgapi.TelegramGateway implementation, namely a Telegram resource and
-// receptor for the emersyx platform.
-type telegramGateway struct {
+// gateway is the type which defines a telegram.Gateway implementation, namely a Telegram resource and receptor for the
+// emersyx platform.
+type gateway struct {
 	api.PeripheralBase
 	apiToken       string
 	updatesLimit   uint
@@ -18,9 +17,9 @@ type telegramGateway struct {
 	updates        chan api.Event
 }
 
-// startPollingUpdates start the process of calling the getUpdates method from the Telegram Bot API, converting the data
-// to tgapi.EUpdate objects and pushing them through the events channel of the telegramGateway instance.
-func (gw *telegramGateway) startPollingUpdates() {
+// startPollingUpdates start the process of calling the getUpdates method from the Telegram Bot API pushing
+// telegram.Update objects through the events channel of the gateway instance.
+func (gw *gateway) startPollingUpdates() {
 	go func() {
 		var offset int64
 		for {
@@ -33,11 +32,8 @@ func (gw *telegramGateway) startPollingUpdates() {
 			}
 			gw.Log.Debugf("received %d update(s)\n", len(updates))
 			for _, update := range updates {
-				eupdate := tgapi.EUpdate{
-					Update: update,
-					Source: gw.Identifier,
-				}
-				gw.updates <- eupdate
+				update.Source = gw.Identifier
+				gw.updates <- update
 			}
 			// if we got any new updates, we need to acknowledge them
 			if len(updates) > 0 {
@@ -50,22 +46,22 @@ func (gw *telegramGateway) startPollingUpdates() {
 }
 
 // GetIdentifier returns the identifier of this gateway.
-func (gw *telegramGateway) GetIdentifier() string {
+func (gw *gateway) GetIdentifier() string {
 	return gw.Identifier
 }
 
 // GetEventsOutChannel returns the api.Event channel through which emersyx events are pushed by this gateway. This
 // function is required to implement the api.Receptor interface.
-func (gw *telegramGateway) GetEventsOutChannel() <-chan api.Event {
+func (gw *gateway) GetEventsOutChannel() <-chan api.Event {
 	return (<-chan api.Event)(gw.updates)
 }
 
-// NewPeripheral creates a new telegramGateway instances based on the options given as argument.
+// NewPeripheral creates a new gateway instances based on the options given as argument.
 func NewPeripheral(opts api.PeripheralOptions) (api.Peripheral, error) {
 	var err error
 
-	// create a new telegramGateway and initialize the base
-	gw := new(telegramGateway)
+	// create a new gateway and initialize the base
+	gw := new(gateway)
 	gw.InitializeBase(opts)
 
 	// create the Updates channel
@@ -76,14 +72,14 @@ func NewPeripheral(opts api.PeripheralOptions) (api.Peripheral, error) {
 	gw.updatesTimeout = 60
 
 	// apply the extended options from the config file
-	config := new(telegramGatewayConfig)
-	if _, err = toml.DecodeFile(opts.ConfigPath, config); err != nil {
+	c := new(config)
+	if _, err = toml.DecodeFile(opts.ConfigPath, c); err != nil {
 		return nil, err
 	}
-	if err = config.validate(); err != nil {
+	if err = c.validate(); err != nil {
 		return nil, err
 	}
-	config.apply(gw)
+	c.apply(gw)
 
 	// start polling the Telegram servers for updates
 	gw.startPollingUpdates()

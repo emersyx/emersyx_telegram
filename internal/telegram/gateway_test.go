@@ -1,19 +1,19 @@
 package main
 
 import (
-	"emersyx.net/emersyx/api"
-	"emersyx.net/emersyx/api/tgapi"
+	"emersyx.net/emersyx/pkg/api"
+	"emersyx.net/emersyx/pkg/api/telegram"
+	"emersyx.net/emersyx/pkg/log"
 	"flag"
 	"fmt"
 	"os"
 	"testing"
 )
 
-var token = flag.String("apitoken", "", "Telegram BOT API token")
 var recvID = flag.String("recvid", "", "Receiver of test messages")
 var updateOffset = flag.Int64("updoffset", 0, "Value for the offset parameter when calling the getUpdates method.")
 var conffile = flag.String("conffile", "", "path to toml configuration file")
-var gw tgapi.TelegramGateway
+var gw telegram.Gateway
 
 func TestMain(m *testing.M) {
 	var err error
@@ -25,10 +25,10 @@ func TestMain(m *testing.M) {
 	// create a new telegramGateway
 	peripheral, err := NewPeripheral(
 		api.PeripheralOptions{
-			Identifier: "emersyx-tggw-test",
+			Identifier: "telegram-gateway-test",
 			ConfigPath: *conffile,
 			LogWriter:  os.Stdout,
-			LogLevel:   api.ELDebug,
+			LogLevel:   log.ELDebug,
 		},
 	)
 	if err != nil {
@@ -36,7 +36,7 @@ func TestMain(m *testing.M) {
 		return
 	}
 
-	gw, ok = peripheral.(*telegramGateway)
+	gw, ok = peripheral.(*gateway)
 	if ok != true {
 		fmt.Println("invalid peripheral type")
 	} else {
@@ -64,7 +64,7 @@ func TestGetMe(t *testing.T) {
 }
 
 func TestSendMessage(t *testing.T) {
-	params := gw.NewTelegramParameters()
+	params := gw.NewParameters()
 	params.ChatID(*recvID)
 	params.Text("hello world! hello from *emersyx*!")
 	params.ParseMode("Markdown")
@@ -87,21 +87,21 @@ func TestGetUpdates(t *testing.T) {
 	eventsChannel := gw.GetEventsOutChannel()
 	e := <-eventsChannel
 
-	if e.GetSourceIdentifier() != "emersyx-tggw-test" {
+	if e.GetSourceIdentifier() != "telegram-gateway-test" {
 		t.Fail()
 		return
 	}
 
-	eu, ok := e.(tgapi.EUpdate)
+	u, ok := e.(telegram.Update)
 	if ok == false {
-		t.Log("The event type is not tgapi.EUpdate.")
+		t.Log("The event type is not telegram.Update.")
 		t.Fail()
 		return
 	}
 
-	t.Log("MessageID    ", eu.Update.Message.MessageID)
-	t.Log("From         ", eu.Update.Message.From)
-	t.Log("Date         ", eu.Update.Message.Date)
-	t.Log("Chat         ", eu.Update.Message.Chat)
+	t.Log("MessageID    ", u.Message.MessageID)
+	t.Log("From         ", u.Message.From)
+	t.Log("Date         ", u.Message.Date)
+	t.Log("Chat         ", u.Message.Chat)
 	t.Log("-----")
 }

@@ -1,15 +1,11 @@
-emtg.so: goget
-	@go build -buildmode=plugin -o emtg.so emtg/*
-
-.PHONY: goget
-goget:
-	@go get emersyx.net/emersyx/api
-	@go get github.com/golang/lint/golint
-	@go get github.com/BurntSushi/toml
+telegram.so:
+	@go build -buildmode=plugin -o telegram.so internal/telegram/*
 
 .PHONY: test
-test: emtg.so
-	@echo "Running the tests with gofmt, go vet and golint..."
-	@test -z $(shell gofmt -s -l emtg/*.go)
+test: telegram.so
+	@echo "Running the tests with gofmt..."
+	@test -z $(shell gofmt -s -l internal/telegra/*.go)
+	@echo "Running the tests with go vet..."
 	@go vet ./...
+	@echo "Running the tests with golint..."
 	@golint -set_exit_status $(shell go list ./...)
