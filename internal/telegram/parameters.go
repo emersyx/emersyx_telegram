@@ -1,7 +1,7 @@
 package main
 
 import (
-	"emersyx.net/emersyx/pkg/api/telegram"
+	"emersyx.net/common/pkg/api/telegram"
 	"errors"
 	"net/url"
 	"strconv"

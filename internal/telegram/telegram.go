@@ -2,7 +2,7 @@ package main
 
 import (
 	"bytes"
-	"emersyx.net/emersyx/pkg/api/telegram"
+	"emersyx.net/common/pkg/api/telegram"
 	"encoding/json"
 	"errors"
 	"fmt"
