@@ -4,7 +4,7 @@ emersyx-telegram.so:
 .PHONY: test
 test: emersyx-telegram.so
 	@echo "Running the tests with gofmt..."
-	@test -z $(shell gofmt -s -l internal/telegra/*.go)
+	@test -z $(shell gofmt -s -l internal/telegram/*.go)
 	@echo "Running the tests with go vet..."
 	@go vet ./...
 	@echo "Running the tests with golint..."
